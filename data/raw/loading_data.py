@@ -1,7 +1,7 @@
 from datasets import load_dataset
 
 # Streaming mode
-dataset_stream = load_dataset("opus_books", "en-de", split="train", streaming=True)
+dataset_stream = load_dataset("sentence-transformers/parallel-sentences-europarl", "en-de", split="train", streaming=True)
 
 # Take first 1000 examples
 subset = []
