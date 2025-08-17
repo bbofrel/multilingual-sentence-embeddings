@@ -4,10 +4,9 @@ from data.preprocessing_data import dataset_preprocessing
 
 def encoding_english_sentences(dataset):
     teacher_model = load_teacher_model()
-    parallel_data = dataset_preprocessing()
+    parallel_data = dataset_preprocessing(dataset)
 
     english_sentences = [pair[0] for pair in parallel_data]
-    assert isinstance(english_sentences, List)
 
-    embeddings = teacher_model.encode(sentences, convert_to_tensor=True)
+    embeddings = teacher_model.encode(english_sentences, convert_to_tensor=True, normalize_embeddings=True)
     return embeddings
