@@ -1,6 +1,4 @@
-# preprocessing.py
-from loading_data import load_dataset_subset
-
+from data.loading_data import load_dataset_subset
 
 def preprocessing(example):
     example = example.strip()

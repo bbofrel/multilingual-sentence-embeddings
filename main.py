@@ -3,7 +3,7 @@ from training.train_student import prepare_dataset
 
 
 def main():
-    with open("config.yaml", "r") as f:
+    with open("configs/sample.yaml", "r") as f:
         config = yaml.safe_load(f)
 
     dataloader = prepare_dataset(config)
