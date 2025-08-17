@@ -1,4 +1,4 @@
 from sentence_transformers import SentenceTransformer
 
-def load_student_model():
-    pass
+def load_student(name: str = "sentence-transformers/paraphrase-xlm-r-multilingual-v1"):
+    return SentenceTransformer(name)
