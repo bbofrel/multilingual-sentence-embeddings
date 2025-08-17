@@ -1,14 +1,15 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+import yaml
+from training.train_student import prepare_dataset
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+def main():
+    with open("config.yaml", "r") as f:
+        config = yaml.safe_load(f)
+
+    dataloader = prepare_dataset(config)
+    print(dataloader)
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    main()
