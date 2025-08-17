@@ -11,11 +11,12 @@ def encoding_english_sentences():
 
     teacher_embeddings = teacher_model.encode(english_sentences, convert_to_tensor=False).tolist()
 
-    return teacher_embeddings, german_sentences
+    return teacher_embeddings, german_sentences, english_sentences
 
-def dataloader_creation(german_sentences, teacher_embeddings, config):
+def dataloader_creation(english_sentences, german_sentences, teacher_embeddings, config):
     BATCH_SIZE = config["training_args"]["batch_size"]
     dataset = Dataset.from_dict({
+        "english_sentence": english_sentences,
         "german_sentence": german_sentences,
         "teacher_embedding": teacher_embeddings
     })
@@ -27,7 +28,7 @@ def dataloader_creation(german_sentences, teacher_embeddings, config):
 
 def prepare_dataset(config):
     """Full pipeline from raw tuples to Hugging Face Dataset."""
-    teacher_embeddings, german_sentences = encoding_english_sentences()
-    dataset = dataloader_creation(german_sentences, teacher_embeddings, config)
+    teacher_embeddings, german_sentences, english_sentences = encoding_english_sentences()
+    dataset = dataloader_creation(english_sentences, german_sentences, teacher_embeddings, config)
 
     return dataset
