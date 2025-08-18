@@ -1,5 +1,5 @@
 import yaml
-from training.train_student import prepare_dataset
+from training.train_student import *
 
 
 def main():
@@ -8,6 +8,9 @@ def main():
 
     dataloader = prepare_dataset(config)
     print(dataloader)
+    batch = next(iter(dataloader))
+    print(batch.keys())
+    training_loop(config, dataloader)
 
 
 # Press the green button in the gutter to run the script.
