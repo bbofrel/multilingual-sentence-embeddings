@@ -1,5 +1,7 @@
 from models.teacher import load_teacher_model
 from data.preprocessing_data import dataset_preprocessing
+from datasets import Dataset
+import torch
 
 
 def encoding_english_sentences():
@@ -12,6 +14,7 @@ def encoding_english_sentences():
     teacher_embeddings = teacher_model.encode(english_sentences, convert_to_tensor=False).tolist()
 
     return teacher_embeddings, german_sentences, english_sentences
+
 
 def dataloader_creation(english_sentences, german_sentences, teacher_embeddings, config):
     BATCH_SIZE = config["training_args"]["batch_size"]
