@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "D:\work\multilingual-sentence-embeddings\main.py", line 18, in <module>
+    main()
+    ~~~~^^
+  File "D:\work\multilingual-sentence-embeddings\main.py", line 15, in main
+    training_loop(config, train_loader, dev_loader)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\work\multilingual-sentence-embeddings\training\train_student.py", line 111, in training_loop
+    torch.nn.utils.clip_grad_norm_(student_model.parameters(), max_norm=1.0)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\work\multilingual-sentence-embeddings\.venv\Lib\site-packages\torch\nn\utils\clip_grad.py", line 36, in _no_grad_wrapper
+    return func(*args, **kwargs)
+  File "D:\work\multilingual-sentence-embeddings\.venv\Lib\site-packages\torch\nn\utils\clip_grad.py", line 221, in clip_grad_norm_
+    total_norm = _get_total_norm(grads, norm_type, error_if_nonfinite, foreach)
+  File "D:\work\multilingual-sentence-embeddings\.venv\Lib\site-packages\torch\nn\utils\clip_grad.py", line 36, in _no_grad_wrapper
+    return func(*args, **kwargs)
+  File "D:\work\multilingual-sentence-embeddings\.venv\Lib\site-packages\torch\nn\utils\clip_grad.py", line 89, in _get_total_norm
+    norms.extend(torch._foreach_norm(device_tensors, norm_type))
+                 ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

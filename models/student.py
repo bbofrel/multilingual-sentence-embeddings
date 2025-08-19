@@ -9,11 +9,17 @@ class StudentWrapper(nn.Module):
         # Load the tokenizer and transformer
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.transformer = AutoModel.from_pretrained(model_name)
+        self.proj: nn.Linear | None = None
+
+    def set_output_dim(self, out_dim: int):
+        in_dim = self.transformer.config.hidden_size
+        if self.proj is None or self.proj.out_features != out_dim:
+            device = next(self.parameters()).device
+            self.proj = nn.Linear(in_dim, out_dim).to(device)
 
     def forward(self, sentences):
         device = next(self.transformer.parameters()).device
 
-        # Tokenize and move to device
         inputs = self.tokenizer(
             sentences,
             padding=True,
@@ -31,5 +37,8 @@ class StudentWrapper(nn.Module):
         sum_embeddings = torch.sum(outputs.last_hidden_state * mask_expanded, 1)
         sum_mask = mask_expanded.sum(1)
         embeddings = sum_embeddings / sum_mask  # [batch_size, hidden_dim]
+
+        if self.proj is not None:
+            embeddings = self.proj(embeddings)
 
         return embeddings

@@ -82,6 +82,10 @@ def training_loop(config, train_loader, dev_loader):
     print(f"Student model: {config.get('models', {}).get('student')}")
     device = "cuda" if torch.cuda.is_available() else "cpu"
     student_model.to(device)
+
+    first_batch = next(iter(train_loader))
+    teacher_dim = int(first_batch["teacher_emb"].shape[1])
+    student_model.set_output_dim(teacher_dim)
     optimizer = torch.optim.AdamW(student_model.parameters(), lr=LR)
 
     wandb.login(key='652f29755fbc034f857f7a0a6eec650bc13d5530')
