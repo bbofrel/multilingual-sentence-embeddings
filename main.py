@@ -6,13 +6,13 @@ def main():
     with open("configs/sample.yaml", "r") as f:
         config = yaml.safe_load(f)
 
-    dataloader = prepare_dataset(config)
-    print(dataloader)
-    batch = next(iter(dataloader))
+    train_loader, dev_loader = prepare_dataset(config)
+
+    print(train_loader)
+    batch = next(iter(train_loader))
     print(batch.keys())
-    training_loop(config, dataloader)
 
+    training_loop(config, train_loader, dev_loader)
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     main()
