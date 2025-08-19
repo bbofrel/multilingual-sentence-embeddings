@@ -1,4 +1,19 @@
 training_args:
-  batch_size: 32
+  batch_size: 8
   num_train_epochs: 10
   learning_rate: 2e-5
+
+models:
+  teacher: "sentence-transformers/all-MiniLM-L6-v2"
+  student: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+
+presets:
+  teachers:
+    - "sentence-transformers/all-MiniLM-L6-v2"
+    - "sentence-transformers/bert-base-nli-mean-tokens"
+    - "sentence-transformers/all-mpnet-base-v2"
+  students:
+    - "xlm-roberta-base"
+    - "bert-base-multilingual-cased"
+    - "sentence-transformers/paraphrase-xlm-r-multilingual-v1"
+    - "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"

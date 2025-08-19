@@ -1,0 +1,49 @@
+Traceback (most recent call last):
+  File "D:\work\multilingual-sentence-embeddings\main.py", line 18, in <module>
+    main()
+    ~~~~^^
+  File "D:\work\multilingual-sentence-embeddings\main.py", line 13, in main
+    training_loop(config, dataloader)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "D:\work\multilingual-sentence-embeddings\training\train_student.py", line 84, in training_loop
+    student_emb_en = student_model(en_sentences)
+  File "D:\work\multilingual-sentence-embeddings\.venv\Lib\site-packages\torch\nn\modules\module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\work\multilingual-sentence-embeddings\.venv\Lib\site-packages\torch\nn\modules\module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "D:\work\multilingual-sentence-embeddings\models\student.py", line 17, in forward
+    inputs = self.tokenizer(
+        sentences,
+    ...<2 lines>...
+        return_tensors="pt"
+    )
+  File "D:\work\multilingual-sentence-embeddings\.venv\Lib\site-packages\transformers\tokenization_utils_base.py", line 2910, in __call__
+    encodings = self._call_one(text=text, text_pair=text_pair, **all_kwargs)
+  File "D:\work\multilingual-sentence-embeddings\.venv\Lib\site-packages\transformers\tokenization_utils_base.py", line 2998, in _call_one
+    return self.batch_encode_plus(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        batch_text_or_text_pairs=batch_text_or_text_pairs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<17 lines>...
+        **kwargs,
+        ^^^^^^^^^
+    )
+    ^
+  File "D:\work\multilingual-sentence-embeddings\.venv\Lib\site-packages\transformers\tokenization_utils_base.py", line 3199, in batch_encode_plus
+    return self._batch_encode_plus(
+           ~~~~~~~~~~~~~~~~~~~~~~~^
+        batch_text_or_text_pairs=batch_text_or_text_pairs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<17 lines>...
+        **kwargs,
+        ^^^^^^^^^
+    )
+    ^
+  File "D:\work\multilingual-sentence-embeddings\.venv\Lib\site-packages\transformers\tokenization_utils_fast.py", line 553, in _batch_encode_plus
+    encodings = self._tokenizer.encode_batch(
+        batch_text_or_text_pairs,
+        add_special_tokens=add_special_tokens,
+        is_pretokenized=is_split_into_words,
+    )
+KeyboardInterrupt

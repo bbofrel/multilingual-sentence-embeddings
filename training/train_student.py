@@ -8,8 +8,9 @@ import torch.nn.functional as F
 import wandb
 
 
-def encoding_english_sentences():
-    teacher_model = load_teacher_model()
+def encoding_english_sentences(config):
+    teacher_model = load_teacher_model(
+        config.get("models", {}).get("teacher"))
     parallel_data = dataset_preprocessing()
 
     english_sentences = [pair[0] for pair in parallel_data]
@@ -35,7 +36,7 @@ def dataloader_creation(english_sentences, german_sentences, teacher_embeddings,
 
 def prepare_dataset(config):
     """Full pipeline from raw tuples to Hugging Face Dataset."""
-    teacher_embeddings, german_sentences, english_sentences = encoding_english_sentences()
+    teacher_embeddings, german_sentences, english_sentences = encoding_english_sentences(config)
     dataset = dataloader_creation(english_sentences, german_sentences, teacher_embeddings, config)
 
     return dataset
@@ -51,7 +52,9 @@ def training_loop(config, dataloader):
     NUM_EPOCHS = config['training_args']['num_train_epochs']
     BATCH_SIZE = config['training_args']['batch_size']
 
-    student_model = StudentWrapper()
+    student_model = StudentWrapper(model_name = config.get("models", {}).get(
+        "student", "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"))
+    print(f"Student model: {config.get('models', {}).get('student')}")
     device = "cuda" if torch.cuda.is_available() else "cpu"
     student_model.to(device)
     optimizer = torch.optim.AdamW(student_model.parameters(), lr=LR)
