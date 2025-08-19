@@ -1,15 +1,18 @@
 import yaml
-from training.train_student import prepare_dataset
+from training.train_student import *
 
 
 def main():
     with open("configs/sample.yaml", "r") as f:
         config = yaml.safe_load(f)
 
-    dataloader = prepare_dataset(config)
-    print(dataloader)
+    train_loader, dev_loader = prepare_dataset(config)
 
+    print(train_loader)
+    batch = next(iter(train_loader))
+    print(batch.keys())
 
-# Press the green button in the gutter to run the script.
+    training_loop(config, train_loader, dev_loader)
+
 if __name__ == '__main__':
     main()

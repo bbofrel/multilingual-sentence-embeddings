@@ -1,0 +1,32 @@
+Traceback (most recent call last):
+  File "D:\work\multilingual-sentence-embeddings\main.py", line 18, in <module>
+    main()
+    ~~~~^^
+  File "D:\work\multilingual-sentence-embeddings\main.py", line 13, in main
+    training_loop(config, dataloader)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "D:\work\multilingual-sentence-embeddings\training\train_student.py", line 76, in training_loop
+    for batch_idx, batch in enumerate(dataloader):
+                            ~~~~~~~~~^^^^^^^^^^^^
+  File "D:\work\multilingual-sentence-embeddings\.venv\Lib\site-packages\torch\utils\data\dataloader.py", line 734, in __next__
+    data = self._next_data()
+  File "D:\work\multilingual-sentence-embeddings\.venv\Lib\site-packages\torch\utils\data\dataloader.py", line 790, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "D:\work\multilingual-sentence-embeddings\.venv\Lib\site-packages\torch\utils\data\_utils\fetch.py", line 50, in fetch
+    data = self.dataset.__getitems__(possibly_batched_index)
+  File "D:\work\multilingual-sentence-embeddings\.venv\Lib\site-packages\datasets\arrow_dataset.py", line 2863, in __getitems__
+    batch = self.__getitem__(keys)
+  File "D:\work\multilingual-sentence-embeddings\.venv\Lib\site-packages\datasets\arrow_dataset.py", line 2859, in __getitem__
+    return self._getitem(key)
+           ~~~~~~~~~~~~~^^^^^
+  File "D:\work\multilingual-sentence-embeddings\.venv\Lib\site-packages\datasets\arrow_dataset.py", line 2840, in _getitem
+    pa_subtable = query_table(self._data, key, indices=self._indices)
+  File "D:\work\multilingual-sentence-embeddings\.venv\Lib\site-packages\datasets\formatting\formatting.py", line 614, in query_table
+    pa_subtable = _query_table(table, key)
+  File "D:\work\multilingual-sentence-embeddings\.venv\Lib\site-packages\datasets\formatting\formatting.py", line 99, in _query_table
+    return table.fast_gather(key % table.num_rows)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\work\multilingual-sentence-embeddings\.venv\Lib\site-packages\datasets\table.py", line 124, in fast_gather
+    for batch_idx, i in zip(batch_indices, indices)
+                        ~~~^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

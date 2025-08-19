@@ -1,4 +1,18 @@
 training_args:
-  batch_size: 32
+  batch_size: 2
   num_train_epochs: 10
-  learning_rate: 3.e-3
+  learning_rate: 2e-5
+
+models:
+  teacher: "sentence-transformers/all-MiniLM-L6-v2"
+  student: "distilbert-base-multilingual-cased"
+
+presets:
+  teachers:
+    - "sentence-transformers/all-MiniLM-L6-v2"
+    - "sentence-transformers/bert-base-nli-mean-tokens"
+    - "sentence-transformers/all-mpnet-base-v2"
+  students:
+    - "xlm-roberta-base"
+    - "bert-base-multilingual-cased"
+    - "distilbert-base-multilingual-cased"
