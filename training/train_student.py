@@ -8,10 +8,11 @@ from models.student import StudentWrapper
 from models.teacher import load_teacher_model
 
 
-def encoding_english_sentences(config):
+def encoding_english_sentences(config, version='full'):
     teacher_model = load_teacher_model(
-        config.get("models", {}).get("teacher"))
-    parallel_data = dataset_preprocessing()
+        config.get("models").get("teacher"))
+    dataset_size = config.get("dataset").get("dataset_size")
+    parallel_data = dataset_preprocessing(version=dataset_size)
 
     english_sentences = [pair[0] for pair in parallel_data]
     german_sentences = [pair[1] for pair in parallel_data]

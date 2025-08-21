@@ -1,0 +1,28 @@
+{
+  "os":  "Windows-11-10.0.22631-SP0",
+  "python":  "CPython 3.13.3",
+  "startedAt":  "2025-08-21T14:52:09.796075Z",
+  "program":  "D:\\Users\\Admin\\pycharm\\Software_project\\main.py",
+  "codePath":  "main.py",
+  "codePathLocal":  "main.py",
+  "git":  {
+    "remote":  "https://github.com/bbofrel/multilingual-sentence-embeddings",
+    "commit":  "798179270da2129cd26bc398f1d1704c49283d91"
+  },
+  "email":  "tsanda.alyona@gmail.com",
+  "root":  "D:\\Users\\Admin\\pycharm\\Software_project",
+  "host":  "LAPTOP-5E7PB92R",
+  "executable":  "D:\\Users\\Admin\\pycharm\\Software_project\\.venv\\Scripts\\python.exe",
+  "cpu_count":  4,
+  "cpu_count_logical":  8,
+  "disk":  {
+    "/":  {
+      "total":  "391307587584",
+      "used":  "326072774656"
+    }
+  },
+  "memory":  {
+    "total":  "8379084800"
+  },
+  "writerId":  "gc3wcyeqftuuoqy97s4iihnn503bjahe"
+}
