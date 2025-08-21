@@ -1,11 +1,11 @@
-from models.teacher import load_teacher_model
-from models.student import StudentWrapper
-
-from data.preprocessing_data import dataset_preprocessing
-from datasets import Dataset
 import torch
 import torch.nn.functional as F
 import wandb
+from datasets import Dataset
+
+from data.preprocessing_data import dataset_preprocessing
+from models.student import StudentWrapper
+from models.teacher import load_teacher_model
 
 
 def encoding_english_sentences(config):
@@ -35,26 +35,27 @@ def dataloader_creation(english_sentences, german_sentences, teacher_embeddings,
 
 
 def prepare_dataset(config):
-    #Train and dev dataloaders
+    # train and dev dataloaders
     teacher_embeddings, german_sentences, english_sentences = encoding_english_sentences(config)
 
-    #train vs dev split (10%)
-    import random, numpy as np
+    # train vs dev split (10%)
+    import random
+    import numpy as np
     N = len(english_sentences)
     idx = list(range(N))
     random.Random(42).shuffle(idx)
     cut = max(1, int(0.10 * N))
 
-    dev_idx   = np.array(idx[:cut])
+    dev_idx = np.array(idx[:cut])
     train_idx = np.array(idx[cut:])
 
     en_train = [english_sentences[i] for i in train_idx]
     de_train = [german_sentences[i] for i in train_idx]
-    t_train  = [teacher_embeddings[i] for i in train_idx]
+    t_train = [teacher_embeddings[i] for i in train_idx]
 
     en_dev = [english_sentences[i] for i in dev_idx]
     de_dev = [german_sentences[i] for i in dev_idx]
-    t_dev  = [teacher_embeddings[i] for i in dev_idx]
+    t_dev = [teacher_embeddings[i] for i in dev_idx]
 
     print(f"Split -> train={len(en_train)} | dev={len(en_dev)}")
 
@@ -62,7 +63,7 @@ def prepare_dataset(config):
     assert not (set(de_train) & set(de_dev))
 
     train_loader = dataloader_creation(en_train, de_train, t_train, config, shuffle=True)
-    dev_loader   = dataloader_creation(en_dev,   de_dev,   t_dev,   config, shuffle=False)
+    dev_loader = dataloader_creation(en_dev, de_dev, t_dev, config, shuffle=False)
     return train_loader, dev_loader
 
     return dataset
@@ -77,9 +78,9 @@ def training_loop(config, train_loader, dev_loader):
     NUM_EPOCHS = config['training_args']['num_train_epochs']
     BATCH_SIZE = config['training_args']['batch_size']
 
-    student_model = StudentWrapper(model_name=config.get("models", {}).get(
+    student_model = StudentWrapper(model_name=config.get("models").get(
         "student", "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"))
-    print(f"Student model: {config.get('models', {}).get('student')}")
+    print(f"Student model: {config.get('models').get('student')}")
     device = "cuda" if torch.cuda.is_available() else "cpu"
     student_model.to(device)
 
@@ -90,12 +91,12 @@ def training_loop(config, train_loader, dev_loader):
 
     wandb.login(key='652f29755fbc034f857f7a0a6eec650bc13d5530')
     wandb.init(project="multilingual-distillation",
-               config={"model": "paraphrase-xlm-r-multilingual-v1", "lr": LR, "batch_size": BATCH_SIZE, "epochs": NUM_EPOCHS})
+               config={"model": "paraphrase-xlm-r-multilingual-v1", "lr": LR, "batch_size": BATCH_SIZE,
+                       "epochs": NUM_EPOCHS})
 
     for epoch in range(NUM_EPOCHS):
         student_model.train()
-        epoch_loss = 0.0
-        epoch_cos_sim = 0.0
+        epoch_loss, epoch_cos_sim, epoch_n = 0.0, 0.0, 0
 
         for batch_idx, batch in enumerate(train_loader):
             en_sentences = batch['en']
@@ -108,49 +109,51 @@ def training_loop(config, train_loader, dev_loader):
 
             student_emb_en = F.normalize(student_emb_en, p=2, dim=1)
             student_emb_de = F.normalize(student_emb_de, p=2, dim=1)
-            teacher_emb    = F.normalize(teacher_emb,    p=2, dim=1)
+            teacher_emb = F.normalize(teacher_emb, p=2, dim=1)
 
             loss = distillation_loss(student_emb_en, teacher_emb) + distillation_loss(student_emb_de, teacher_emb)
             loss.backward()
             torch.nn.utils.clip_grad_norm_(student_model.parameters(), max_norm=1.0)
             optimizer.step()
 
+            batch_size = teacher_emb.size(0)  # [batch_size, emb_dim]
+            epoch_n += batch_size
+
             wandb.log({"batch_loss": loss.item(),
                        "batch_cosine_sim": F.cosine_similarity(student_emb_en, student_emb_de).mean().item()})
-            epoch_loss += loss.item()
-            epoch_cos_sim += F.cosine_similarity(student_emb_en, student_emb_de).mean().item()
+            epoch_loss += loss.item() * batch_size
+            epoch_cos_sim += F.cosine_similarity(student_emb_en, student_emb_de).mean().item() * batch_size
 
-        avg_loss = epoch_loss / len(train_loader)
-        avg_cos  = epoch_cos_sim / len(train_loader)
+        avg_loss = epoch_loss / epoch_n
+        avg_cos = epoch_cos_sim / epoch_n
         wandb.log({"epoch_loss": avg_loss, "epoch_cosine_sim": avg_cos})
-        print(f"------EPOCH {epoch+1}-----------------")
+        print(f"------EPOCH {epoch + 1}-----------------")
         print(f"epoch_loss: {avg_loss:.6f}, cosine_sim: {avg_cos:.4f}")
 
-        # DEV
         student_model.eval()
         dev_mse_sum, dev_cos_sum, dev_n = 0.0, 0.0, 0
         with torch.no_grad():
             for batch in dev_loader:
-                de = batch['de']
-                t  = batch['teacher_emb'].to(device)
+                de_sentences = batch['de']
+                teacher_emb = batch['teacher_emb'].to(device)  # teacher's english
 
-                s_de = student_model(de)
-                s_de = F.normalize(s_de, p=2, dim=1)
-                t    = F.normalize(t,    p=2, dim=1)
+                student_de_val = student_model(de_sentences)  # student's german
+                # normalizing
+                student_de_val = F.normalize(student_de_val, p=2, dim=1)
+                teacher_emb = F.normalize(teacher_emb, p=2, dim=1)
 
-                mse = F.mse_loss(s_de, t)
-                cos = (s_de * t).sum(dim=1).mean()
+                batch_size = teacher_emb.size(0)  # [batch_size, emb_dim]
 
-                bs = t.size(0)
-                dev_mse_sum += mse.item() * bs
-                dev_cos_sum += cos.item() * bs
-                dev_n += bs
+                mse_per_sample = F.mse_loss(student_de_val, teacher_emb, reduction='none').mean(dim=1)
+                dev_mse_sum += mse_per_sample.sum().item()
+                cos_per_sample = F.cosine_similarity(student_de_val, teacher_emb, dim=1)
+                dev_cos_sum += cos_per_sample.sum().item()
+
+                dev_n += batch_size
 
         dev_mse = dev_mse_sum / max(1, dev_n)
         dev_cos = dev_cos_sum / max(1, dev_n)
-        print(f"[DEV] mse: {dev_mse:.6f} | cos: {dev_cos:.4f}")
-        wandb.log({"dev/mse": dev_mse, "dev/cos": dev_cos})
+        print(f"validation MSE: {dev_mse:.6f} | dev_cosine_sim: {dev_cos:.4f}")
+        wandb.log({"dev_mse": dev_mse, "dev_cosine_sim": dev_cos})
 
     wandb.finish()
-
-
