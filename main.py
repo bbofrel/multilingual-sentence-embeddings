@@ -7,12 +7,10 @@ def main():
         config = yaml.safe_load(f)
 
     train_loader, dev_loader = prepare_dataset(config)
-
-    print(train_loader)
-    batch = next(iter(train_loader))
-    print(batch.keys())
-
+    print("dataset is loaded")
     training_loop(config, train_loader, dev_loader)
+    print("training started")
+
 
 if __name__ == '__main__':
     main()

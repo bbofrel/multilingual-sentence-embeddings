@@ -2,31 +2,31 @@ _wandb:
     value:
         cli_version: 0.21.1
         e:
-            wlta8zstedcmiquja26ymw474n5j3of9:
+            gc3wcyeqftuuoqy97s4iihnn503bjahe:
                 codePath: main.py
                 codePathLocal: main.py
                 cpu_count: 4
                 cpu_count_logical: 8
                 disk:
                     /:
-                        total: "291689721856"
-                        used: "261776883712"
+                        total: "391307587584"
+                        used: "326072774656"
                 email: tsanda.alyona@gmail.com
-                executable: D:\work\multilingual-sentence-embeddings\.venv\Scripts\python.exe
+                executable: D:\Users\Admin\pycharm\Software_project\.venv\Scripts\python.exe
                 git:
-                    commit: 7cbbeab9660445e5e858d97003b74a42dcb73038
+                    commit: 798179270da2129cd26bc398f1d1704c49283d91
                     remote: https://github.com/bbofrel/multilingual-sentence-embeddings
-                host: LAPTOP-KDAGU4QB
+                host: LAPTOP-5E7PB92R
                 memory:
-                    total: "8415133696"
-                os: Windows-11-10.0.26100-SP0
-                program: D:\work\multilingual-sentence-embeddings\main.py
-                python: CPython 3.13.7
-                root: D:\work\multilingual-sentence-embeddings
-                startedAt: "2025-08-19T09:54:44.026553Z"
-                writerId: wlta8zstedcmiquja26ymw474n5j3of9
+                    total: "8379084800"
+                os: Windows-11-10.0.22631-SP0
+                program: D:\Users\Admin\pycharm\Software_project\main.py
+                python: CPython 3.13.3
+                root: D:\Users\Admin\pycharm\Software_project
+                startedAt: "2025-08-21T14:52:09.796075Z"
+                writerId: gc3wcyeqftuuoqy97s4iihnn503bjahe
         m: []
-        python_version: 3.13.7
+        python_version: 3.13.3
         t:
             "1":
                 - 1
@@ -46,7 +46,7 @@ _wandb:
                 - 75
             "3":
                 - 16
-            "4": 3.13.7
+            "4": 3.13.3
             "5": 0.21.1
             "6": 4.55.2
             "8":
@@ -54,10 +54,10 @@ _wandb:
             "12": 0.21.1
             "13": windows-amd64
 batch_size:
-    value: 8
+    value: 16
 epochs:
-    value: 10
+    value: 5
 lr:
-    value: 2e-05
+    value: 1e-05
 model:
     value: paraphrase-xlm-r-multilingual-v1

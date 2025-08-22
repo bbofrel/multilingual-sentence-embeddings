@@ -1,7 +1,9 @@
+import os
+import yaml
 from sentence_transformers import SentenceTransformer
-import yaml, os
 
-#if not arg, then config, if not config-default
+
+# if not arg, then config, if not config-default
 def load_teacher_model(model_name: str | None = None):
     default_name = 'sentence-transformers/all-MiniLM-L6-v2'
     if model_name is None:

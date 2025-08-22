@@ -1,0 +1,1 @@
+{"dev_cosine_sim":0.4152197271886498,"_wandb":{"runtime":3204},"_runtime":3204,"_timestamp":1.7557911338591037e+09,"epoch_loss":0.008094351251153337,"epoch_cosine_sim":0.9536664660611676,"_step":79,"dev_mse":0.00304573080079122,"batch_loss":0.005899391137063503,"batch_cosine_sim":0.9599489569664001}
