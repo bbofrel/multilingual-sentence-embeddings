@@ -1,7 +1,11 @@
-import argparse, torch, numpy as np
+import argparse
+import numpy as np
+import torch
+import yaml
 from datasets import load_dataset
 from scipy.stats import spearmanr
 from sentence_transformers import SentenceTransformer, util
+
 from models.student import StudentWrapper
 
 MONO_TRACKS = ["en-en", "de-de"]
@@ -21,8 +25,8 @@ def load_sts17(lang_pair):
     return s1, s2, y
 
 
-def encode_teacher(model_name, texts, config, batch_size=False, normalize=True):
-    if not batch_size:
+def encode_teacher(model_name, texts, config, batch_size=None, normalize=True):
+    if batch_size is None:
         batch_size = config['training_args']['batch_size']
     model = SentenceTransformer(model_name)
     embeddings = model.encode(texts, convert_to_tensor=True, batch_size=batch_size,
@@ -30,14 +34,14 @@ def encode_teacher(model_name, texts, config, batch_size=False, normalize=True):
     return embeddings
 
 
-def encode_student(checkpoint_path, texts, config, batch_size=False, normalize=True, device=None):
-    if not batch_size:
+def encode_student(checkpoint_path, texts, config, batch_size=None, normalize=True, device=None):
+    if batch_size is None:
         batch_size = config['training_args']['batch_size']
-    state_dict_weigths = torch.load(checkpoint_path, map_location="cpu")
+    state_dict_weights = torch.load(checkpoint_path, map_location="cpu")
     out_dim = None
     for k in ["proj.weight", "projection.weight", "proj.fc.weight"]:
-        if k in state_dict_weigths and hasattr(state_dict_weigths[k], "shape"):
-            out_dim = state_dict_weigths[k].shape[0]
+        if k in state_dict_weights and hasattr(state_dict_weights[k], "shape"):
+            out_dim = state_dict_weights[k].shape[0]
             break
     student = StudentWrapper(model_name=config.get('models').get('student'))
     if out_dim is not None and hasattr(student, "set_output_dim"):
@@ -45,7 +49,7 @@ def encode_student(checkpoint_path, texts, config, batch_size=False, normalize=T
     if device is None:
         device = "cuda" if torch.cuda.is_available() else "cpu"
     student.to(device)
-    student.load_state_dict(state_dict_weigths, strict=False)
+    student.load_state_dict(state_dict_weights, strict=False)
     student.eval()
     batch_embs = []
     for i in range(0, len(texts), batch_size):
@@ -59,7 +63,7 @@ def encode_student(checkpoint_path, texts, config, batch_size=False, normalize=T
     return student_embeddings
 
 
-def eval_tracks(encoder_kind, encoder_ref, tracks):
+def eval_tracks(encoder_kind, encoder_ref, tracks, config):
     results = {}  # storing the Spearman correlation for each track
     for lang_pair in tracks:
         s1, s2, gold = load_sts17(lang_pair)
@@ -84,6 +88,6 @@ if __name__ == "__main__":
         config = yaml.safe_load(f)
     checkpoint_path = "models/student_xlmr_distilled.pt"
     print("Mono_tracks (EN-EN, DE-DE):")
-    eval_tracks("student", checkpoint_path, MONO_TRACKS)
+    eval_tracks(config['evaluation']['mode'], checkpoint_path, MONO_TRACKS, config)
     print("\nCross_track (EN-DE):")
-    eval_tracks("student", checkpoint_path, CROSS_TRACKS)
+    eval_tracks(config['evaluation']['mode'], checkpoint_path, CROSS_TRACKS, config)
