@@ -156,6 +156,7 @@ def training_loop(config, train_loader, dev_loader):
         dev_cos = dev_cos_sum / max(1, dev_n)
         print(f"validation MSE: {dev_mse:.6f} | dev_cosine_sim: {dev_cos:.4f}")
         wandb.log({"dev_mse": dev_mse, "dev_cosine_sim": dev_cos})
+
         torch.save(student_model.state_dict(), "models/student_xlmr_distilled.pt")
 
     wandb.finish()
