@@ -1,4 +1,5 @@
 from datasets import load_dataset
+from itertools import islice
 
 
 def load_dataset_subset():
@@ -19,5 +20,5 @@ def load_full_dataset():
         split="train",
         streaming=True
     )
-    dataset = list(dataset_stream)
+    dataset = list(islice(dataset_stream, 50000))
     return dataset
