@@ -4,7 +4,7 @@ from sentence_transformers import SentenceTransformer
 
 
 # if not arg, then config, if not config-default
-def load_teacher_model(model_name: str | None = None):
+def load_teacher_model(model_name: Optional[str] = None):
     default_name = 'sentence-transformers/all-MiniLM-L6-v2'
     if model_name is None:
         try:
