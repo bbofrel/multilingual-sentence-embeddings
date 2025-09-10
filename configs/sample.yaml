@@ -7,7 +7,8 @@ evaluation:
   mode: "student" # "teacher"
 
 dataset:
-  dataset_size: "full" # "subset": includes 1000 examples
+  dataset_size: "subset" # "subset" or "full"
+  subset_size: 30000
 
 models:
   teacher: "sentence-transformers/all-MiniLM-L6-v2"

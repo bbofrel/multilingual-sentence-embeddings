@@ -2,23 +2,17 @@ from datasets import load_dataset
 from itertools import islice
 
 
-def load_dataset_subset():
+def load_dataset_subset(n_samples: int = 1000):
     dataset_stream = load_dataset("sentence-transformers/parallel-sentences-europarl", "en-de", split="train",
                                   streaming=True)
-    subset = []
-    for i, example in enumerate(dataset_stream):
-        if i >= 1000:
-            break
-        subset.append(example)
-    return subset
+    return list(islice(dataset_stream, n_samples))
 
 
-def load_full_dataset():
+def load_full_dataset(limit: int = 50000):
     dataset_stream = load_dataset(
         "sentence-transformers/parallel-sentences-europarl",
         "en-de",
         split="train",
         streaming=True
     )
-    dataset = list(islice(dataset_stream, 50000))
-    return dataset
+    return list(islice(dataset_stream, limit))
