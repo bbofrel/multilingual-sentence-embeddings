@@ -1,0 +1,24 @@
+training_args:
+  batch_size: 32
+  num_train_epochs: 5
+  learning_rate: 2e-5
+
+evaluation:
+  mode: "student" # "teacher"
+
+dataset:
+  dataset_size: "full" # "subset": includes 1000 examples
+
+models:
+  teacher: "sentence-transformers/all-MiniLM-L6-v2"
+  student: "xlm-roberta-base"
+
+presets:
+  teachers:
+    - "sentence-transformers/all-MiniLM-L6-v2"
+    - "sentence-transformers/bert-base-nli-mean-tokens"
+    - "sentence-transformers/all-mpnet-base-v2"
+  students:
+    - "xlm-roberta-base"
+    - "bert-base-multilingual-cased"
+    - "distilbert-base-multilingual-cased"
