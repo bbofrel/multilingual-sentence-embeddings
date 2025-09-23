@@ -2,6 +2,8 @@ import torch
 import torch.nn.functional as F
 import wandb
 from datasets import Dataset
+from sklearn.model_selection import train_test_split
+
 
 from data.preprocessing_data import dataset_preprocessing
 from models.student import StudentWrapper
@@ -11,10 +13,13 @@ from models.teacher import load_teacher_model
 def encoding_english_sentences(config, version='full'):
     teacher_model = load_teacher_model(
         config.get("models").get("teacher"))
+    
     dataset_size = config.get("dataset").get("dataset_size")
     subset_size = int(config.get("dataset").get("subset_size", 1000))
+    
     parallel_data = dataset_preprocessing(version=dataset_size, subset_size=subset_size)
-
+    parallel_data = list(dict.fromkeys(parallel_data))
+    
     english_sentences = [pair[0] for pair in parallel_data]
     german_sentences = [pair[1] for pair in parallel_data]
 
@@ -41,34 +46,20 @@ def prepare_dataset(config):
     teacher_embeddings, german_sentences, english_sentences = encoding_english_sentences(config)
 
     # train vs dev split (10%)
-    import random
-    import numpy as np
-    N = len(english_sentences)
-    idx = list(range(N))
-    random.Random(42).shuffle(idx)
-    cut = max(1, int(0.10 * N))
-
-    dev_idx = np.array(idx[:cut])
-    train_idx = np.array(idx[cut:])
-
-    en_train = [english_sentences[i] for i in train_idx]
-    de_train = [german_sentences[i] for i in train_idx]
-    t_train = [teacher_embeddings[i] for i in train_idx]
-
-    en_dev = [english_sentences[i] for i in dev_idx]
-    de_dev = [german_sentences[i] for i in dev_idx]
-    t_dev = [teacher_embeddings[i] for i in dev_idx]
+    en_train, en_dev, de_train, de_dev, t_train, t_dev = train_test_split(
+        english_sentences,
+        german_sentences,
+        teacher_embeddings,
+        test_size=0.1,
+        random_state=42,
+        shuffle=True
+    )
 
     print(f"Split -> train={len(en_train)} | dev={len(en_dev)}")
-
-    assert not (set(en_train) & set(en_dev))
-    assert not (set(de_train) & set(de_dev))
 
     train_loader = dataloader_creation(en_train, de_train, t_train, config, shuffle=True)
     dev_loader = dataloader_creation(en_dev, de_dev, t_dev, config, shuffle=False)
     return train_loader, dev_loader
-
-    return dataset
 
 
 def distillation_loss(student_emb, teacher_emb):
