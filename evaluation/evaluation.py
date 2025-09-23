@@ -8,8 +8,8 @@ from sentence_transformers.util import normalize_embeddings
 def load_tatoeba(limit=1000):
     ttb = load_dataset("Helsinki-NLP/tatoeba_mt", "deu-eng",
                        split="test", trust_remote_code=True).select(range(limit))
-    en = [r["sourceString"] for r in ttb]
-    de = [r["targetString"] for r in ttb]
+    en = [r["targetString"] for r in ttb]
+    de = [r["sourceString"] for r in ttb]
     return en, de
 
 def evaluation_tatoeba(model_path=None, limit=1000):
