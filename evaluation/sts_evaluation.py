@@ -8,17 +8,17 @@ from sentence_transformers import SentenceTransformer, util
 
 from models.student import StudentWrapper
 
-MONO_TRACKS = ["en-en", "de-de"]
+MONO_TRACKS = ["en-en"]
 CROSS_TRACKS = ["en-de"]
 
 
 def load_sts17(lang_pair):
     dataset = load_dataset("mteb/sts17-crosslingual-sts", split="test")
     keep = ["en-de", "de-en"] if lang_pair == "en-de" else [lang_pair]  # keeping both directions
-    filtered_dataset = dataset.filter(lambda row: row.get("language") in keep)  # filtering rows by the language column
+    filtered_dataset = dataset.filter(lambda row: row.get("lang") in keep)  # filtering rows by the language column
     if len(filtered_dataset) == 0:
-        uniq = sorted(set(dataset["language"])) if "language" in dataset.column_names else []
-        raise ValueError(f"No data for {lang_pair}. Available 'language' values: {uniq}")
+        uniq = sorted(set(dataset["lang"])) if "lang" in dataset.column_names else []
+        raise ValueError(f"No data for {lang_pair}. Available 'lang' values: {uniq}")
     s1 = [row["sentence1"] for row in filtered_dataset]
     s2 = [row["sentence2"] for row in filtered_dataset]
     y = [float(row["score"]) for row in filtered_dataset]
@@ -86,8 +86,13 @@ def eval_tracks(encoder_kind, encoder_ref, tracks, config):
 if __name__ == "__main__":
     with open("configs/sample.yaml", "r") as f:
         config = yaml.safe_load(f)
-    checkpoint_path = "models/student_xlmr_distilled.pt"
-    print("Mono_tracks (EN-EN, DE-DE):")
-    eval_tracks(config['evaluation']['mode'], checkpoint_path, MONO_TRACKS, config)
+    mode = config["evaluation"]["mode"] 
+    if mode == "teacher":
+        encoder_ref = config["models"]["teacher"] 
+    else:
+        encoder_ref = "models/student_xlmr_distilled.pt" 
+
+    print("Mono_tracks (EN-EN):")
+    eval_tracks(mode, encoder_ref, MONO_TRACKS, config)
     print("\nCross_track (EN-DE):")
-    eval_tracks(config['evaluation']['mode'], checkpoint_path, CROSS_TRACKS, config)
+    eval_tracks(mode, encoder_ref, CROSS_TRACKS, config)
