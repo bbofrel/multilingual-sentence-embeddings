@@ -86,6 +86,7 @@ def eval_tracks(encoder_kind, encoder_ref, tracks, config):
 if __name__ == "__main__":
     with open("configs/sample.yaml", "r") as f:
         config = yaml.safe_load(f)
+
     mode = config["evaluation"]["mode"] 
     if mode == "teacher":
         encoder_ref = config["models"]["teacher"] 
