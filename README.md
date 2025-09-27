@@ -6,6 +6,6 @@ To train your student model with knowledge distillation from a teacher model, yo
 
 _NOTE:_ to run evaluation, you need to run the respective scripts directly from the evaluation folder. Besides, you need the datasets version of 2.19.0 for doing so. We suggest that you first train the model using the requirements file in this repository, and then run the following specifically for the evaluation:
 
-<pre> ```pip install datasets==2.19.0 ``` </pre>
+<pre> pip install datasets==2.19.0 </pre>
 
 
