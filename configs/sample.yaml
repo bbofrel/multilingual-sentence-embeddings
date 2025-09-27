@@ -1,0 +1,16 @@
+training_args:
+  batch_size: 64
+  num_train_epochs: 20
+  learning_rate: 2e-5
+  wandb_key: <YOUR WANDB API KEY>
+
+evaluation:
+  mode: "student" # "teacher", in case you want to evaluate teacher model as well
+
+dataset:
+  dataset_size: "full" # "subset"
+  subset_size: 1000
+
+models:
+  teacher: "sentence-transformers/all-MiniLM-L6-v2"
+  student: "xlm-roberta-base"
