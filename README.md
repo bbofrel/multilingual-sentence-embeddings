@@ -1,6 +1,6 @@
 **Welcome to the repository of the knowledge-distillation project.**
 
-In this repo, we replicate the paper or Reimers & Gurevych: [Nils Reimers, Iryna Gurevych.](https://arxiv.org/abs/2004.09813) You can find our results in the paper in this repo.
+In this repo, we replicate the paper of [Nils Reimers, Iryna Gurevych.](https://arxiv.org/abs/2004.09813) You can find our paper with the obtained results [here](Tsanda_Mitsiulia_paper.pdf).
 
 To train your student model with knowledge distillation from a teacher model, you need to set up your environment, specify hyperparameters in configs/sample.yaml and run main.py. Your model's weights will be saved in models/checkpoints.
 
