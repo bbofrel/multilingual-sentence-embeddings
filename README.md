@@ -1,0 +1,1 @@
+NOTE: to run evaluation, you need to run the respective scripts directly from evaluation folder. Also, you need the datasets version of 2.19.0 for doing so. We suggest that you first train the model using the requirements file in this repository, and then for evaluation run "pip install datasets==2.19.0"
